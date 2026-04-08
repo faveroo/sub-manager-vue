@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import { auth } from "../firebase/config";
 import {
-  signInWithEmailAndPassword,
-  signOut,
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
-  createUserWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
@@ -20,7 +20,6 @@ export const useAuthStore = defineStore("auth", () => {
   });
 
   const error = ref(emptyError());
-
   const hasError = computed(() => Object.values(error.value).some(Boolean));
 
   const clearError = () => {
@@ -36,30 +35,30 @@ export const useAuthStore = defineStore("auth", () => {
 
     switch (code) {
       case "auth/invalid-email":
-        return { email: "Email inválido." };
+        return { email: "Email invalido." };
 
       case "auth/user-not-found":
       case "auth/wrong-password":
       case "auth/invalid-credential":
-        return { general: "Email ou senha inválidos." };
+        return { general: "Email ou senha invalidos." };
 
       case "auth/email-already-in-use":
-        return { email: "Não foi possível usar este email." };
+        return { email: "Nao foi possivel usar este email." };
 
       case "auth/weak-password":
-        return { password: "Senha não atende aos requisitos." };
+        return { password: "Senha nao atende aos requisitos." };
 
       case "auth/missing-password":
-        return { password: "A senha é obrigatória." };
+        return { password: "A senha e obrigatoria." };
 
       case "auth/network-request-failed":
-        return { general: "Não foi possível conectar. Tente novamente." };
+        return { general: "Nao foi possivel conectar. Tente novamente." };
 
       case "auth/too-many-requests":
         return { general: "Muitas tentativas. Tente novamente mais tarde." };
 
       default:
-        return { general: "Não foi possível autenticar. Tente novamente." };
+        return { general: "Nao foi possivel autenticar. Tente novamente." };
     }
   };
 
@@ -88,12 +87,15 @@ export const useAuthStore = defineStore("auth", () => {
 
     try {
       if (!confirm_password) {
-        setError({ confirm_password: "A confirmação de senha é obrigatória." });
+        setError({ confirm_password: "A confirmacao de senha e obrigatoria." });
         return;
       }
 
       if (password !== confirm_password) {
-        setError({ confirm_password: "As senhas digitadas estão diferentes.", password: "As senhas digitadas estão diferentes."});
+        setError({
+          confirm_password: "As senhas digitadas estao diferentes.",
+          password: "As senhas digitadas estao diferentes."
+        });
         return;
       }
 
@@ -112,3 +114,4 @@ export const useAuthStore = defineStore("auth", () => {
 
   return { user, error, hasError, loading, clearError, login, logout, register };
 });
+

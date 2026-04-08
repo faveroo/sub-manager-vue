@@ -1,0 +1,36 @@
+:root {
+  color-scheme: dark;
+}
+
+body {
+  --bs-body-font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  --bs-body-bg: #0b0f17;
+  --bs-body-color: #e9eefc;
+  --bs-body-color-rgb: 233, 238, 252;
+  --bs-border-color: rgba(255, 255, 255, 0.10);
+  --bs-primary: #a78bfa;
+  --bs-primary-rgb: 167, 139, 250;
+  --bs-link-color: #a78bfa;
+  --bs-link-hover-color: #c4b5fd;
+  --bs-secondary-color: rgba(233, 238, 252, 0.62);
+  --bs-secondary-color-rgb: 233, 238, 252;
+
+  background-color: var(--bs-body-bg);
+}
+
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Slightly more "app-like" surfaces, still Bootstrap-first. */
+.card {
+  --bs-card-bg: #0f1624;
+  --bs-card-border-color: rgba(255, 255, 255, 0.10);
+}
+
+.table {
+  --bs-table-color: var(--bs-body-color);
+}
