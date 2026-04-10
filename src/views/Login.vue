@@ -4,8 +4,7 @@
       <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
         <div class="card shadow-sm rounded-4">
           <div class="card-body p-4 p-md-4">
-            <div class="mb-4">
-              <div class="text-body-secondary small">Sub Manager</div>
+            <div class="mb-4 text-center">
               <h1 class="h4 mb-1 fw-semibold">Login</h1>
               <p class="mb-0 text-body-secondary">Acesse sua conta para ver suas assinaturas.</p>
             </div>
