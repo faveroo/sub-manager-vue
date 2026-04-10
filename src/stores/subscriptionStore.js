@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
+import { useAuthStore } from "./authStore";
 
 const STORAGE_KEY = "sub-manager:subscriptions";
 
@@ -35,9 +36,11 @@ export const useSubscriptionStore = defineStore("subscriptions", () => {
 
   const load = () => {
     try {
+      const user = useAuthStore().user;
       const raw = localStorage.getItem(STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
-      subscriptions.value = Array.isArray(parsed) ? parsed : [];
+      const filtered = Array.isArray(parsed) ? parsed.filter((s) => s.user_uid === user?.uid) : [];
+      subscriptions.value = filtered;
     } catch {
       subscriptions.value = [];
     }
@@ -48,6 +51,7 @@ export const useSubscriptionStore = defineStore("subscriptions", () => {
   };
 
   const addSubscription = ({ name, category, amount, billingDay }) => {
+    const user = useAuthStore().user;
     const id = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now());
 
     subscriptions.value.unshift({
@@ -56,6 +60,7 @@ export const useSubscriptionStore = defineStore("subscriptions", () => {
       category: String(category || "Outros").trim() || "Outros",
       amount: toCurrencyNumber(amount),
       billingDay: Number(billingDay) || 1,
+      user_uid: user?.uid || null,
       active: true,
       createdAt: new Date().toISOString()
     });
@@ -88,7 +93,7 @@ export const useSubscriptionStore = defineStore("subscriptions", () => {
     });
   });
 
-  const activeList = computed(() => list.value.filter((s) => s.active));
+  const activeList = computed(() => list.value.filter((s) => s.active && s.user_uid === useAuthStore().user?.uid));
   const activeCount = computed(() => activeList.value.length);
   const monthlyTotal = computed(() => activeList.value.reduce((sum, s) => sum + toCurrencyNumber(s.amount), 0));
 
