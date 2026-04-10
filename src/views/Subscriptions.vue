@@ -12,9 +12,9 @@
       <div class="col-12 col-xl-4">
         <div class="card rounded-4">
           <div class="card-body">
-            <div class="fw-semibold mb-3">Nova assinatura</div>
+            <div class="fw-semibold mb-3">{{ isEditing ? 'Editar assinatura' : 'Nova assinatura' }}</div>
 
-            <form @submit.prevent="handleAdd" novalidate>
+            <form @submit.prevent="handleSubmit" novalidate>
               <div class="mb-2">
                 <label class="form-label">Nome</label>
                 <input v-model.trim="form.name" type="text" class="form-control" placeholder="Ex.: Netflix" required />
@@ -46,7 +46,14 @@
                 </div>
               </div>
 
-              <button class="btn btn-primary w-100 mt-3" type="submit" :disabled="!canSubmit">Adicionar</button>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-primary flex-grow-1" type="submit" :disabled="!canSubmit">
+                  {{ isEditing ? 'Salvar' : 'Adicionar' }}
+                </button>
+                <button v-if="isEditing" class="btn btn-outline-secondary" type="button" @click="cancelEdit">
+                  Cancelar
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -133,6 +140,9 @@
                         <button class="btn btn-outline-secondary" type="button" @click="handleToggleActive(s.id)">
                           {{ s.active ? "Desativar" : "Ativar" }}
                         </button>
+                        <button class="btn btn-outline-primary" type="button" @click="handleEdit(s)">
+                          Editar
+                        </button>
                         <button class="btn btn-outline-danger" type="button" @click="handleRemove(s.id)">
                           Remover
                         </button>
@@ -160,11 +170,14 @@ const flash = useFlashStore();
 const categories = ["Streaming", "Software", "Jogos", "Educacao", "Outros"];
 
 const form = reactive({
+  id: null,
   name: "",
   category: "Streaming",
   amount: "",
   billingDay: 1
 });
+
+const isEditing = computed(() => !!form.id);
 
 const canSubmit = computed(() => {
   const nameOk = String(form.name || "").trim().length > 0;
@@ -227,21 +240,44 @@ const filtered = computed(() => {
   return items;
 });
 
-const handleAdd = () => {
-  if (!canSubmit.value) return;
+const handleEdit = (sub) => {
+  form.id = sub.id;
+  form.name = sub.name;
+  form.category = sub.category;
+  form.amount = sub.amount;
+  form.billingDay = sub.billingDay;
+};
 
-  store.addSubscription({
-    name: form.name,
-    category: form.category,
-    amount: form.amount,
-    billingDay: form.billingDay
-  });
-
-  flash.show("Assinatura criada com sucesso!", "success");
-
+const cancelEdit = () => {
+  form.id = null;
   form.name = "";
   form.amount = "";
   form.billingDay = 1;
+  form.category = "Streaming";
+};
+
+const handleSubmit = async () => {
+  if (!canSubmit.value) return;
+
+  if (isEditing.value) {
+    await store.updateSubscription(form.id, {
+      name: form.name,
+      category: form.category,
+      amount: form.amount,
+      billingDay: form.billingDay
+    });
+    flash.show("Assinatura atualizada com sucesso!", "success");
+  } else {
+    await store.addSubscription({
+      name: form.name,
+      category: form.category,
+      amount: form.amount,
+      billingDay: form.billingDay
+    });
+    flash.show("Assinatura criada com sucesso!", "success");
+  }
+
+  cancelEdit();
 };
 
 const handleToggleActive = (id) => {
