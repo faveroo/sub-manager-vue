@@ -9,8 +9,8 @@ import {
 import { computed, ref } from "vue";
 
 export const useAuthStore = defineStore("auth", () => {
+  const loading = ref(true);
   const user = ref(null);
-  const loading = ref(false);
 
   const emptyError = () => ({
     email: null,
@@ -107,10 +107,25 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-  onAuthStateChanged(auth, (u) => {
-    user.value = u;
-  });
 
-  return { user, error, hasError, loading, clearError, login, logout, register };
+  let initialized = false;
+  let initPromise;
+
+  const init = () => {
+    if (initialized) return initPromise;
+
+    initPromise = new Promise((resolve) => {
+      onAuthStateChanged(auth, (firebaseUser) => {
+        user.value = firebaseUser;
+        loading.value = false;
+        initialized = true;
+        resolve();
+      });
+    });
+
+    return initPromise;
+  };
+
+  return { user, error, hasError, loading, clearError, login, logout, register, init };
 });
 
