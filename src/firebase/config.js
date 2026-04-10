@@ -4,13 +4,15 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB6stM5LsKhBOJBtUxVmyO-DwBxIxG4iNo",
-  authDomain: "vue-firebase-pinia-d0d4b.firebaseapp.com",
-  projectId: "vue-firebase-pinia-d0d4b",
-  storageBucket: "vue-firebase-pinia-d0d4b.firebasestorage.app",
-  messagingSenderId: "439134909057",
-  appId: "1:439134909057:web:571eb9bd0f53844d291380"
+  apiKey: "AIzaSyBTa2pRwYR3WCrvUWq2qjOuIOBFY0YYa0Q",
+  authDomain: "fir-pinia-3f810.firebaseapp.com",
+  projectId: "fir-pinia-3f810",
+  storageBucket: "fir-pinia-3f810.firebasestorage.app",
+  messagingSenderId: "58183537250",
+  appId: "1:58183537250:web:c8fae71669846847d7f73b"
 };
+
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
