@@ -32,7 +32,6 @@ export const useAuthStore = defineStore("auth", () => {
 
   const normalizeAuthError = (err) => {
     const code = err?.code;
-
     switch (code) {
       case "auth/invalid-email":
         return { email: "Email invalido." };
@@ -43,7 +42,7 @@ export const useAuthStore = defineStore("auth", () => {
         return { general: "Email ou senha invalidos." };
 
       case "auth/email-already-in-use":
-        return { email: "Nao foi possivel usar este email." };
+        return { general: "Não foi possível criar a conta. Tente novamente" };
 
       case "auth/weak-password":
         return { password: "Senha nao atende aos requisitos." };
