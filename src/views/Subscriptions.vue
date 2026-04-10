@@ -130,10 +130,10 @@
                     <td class="text-end font-mono">{{ formatCurrency(s.amount) }}</td>
                     <td class="text-end">
                       <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-secondary" type="button" @click="store.toggleActive(s.id)">
+                        <button class="btn btn-outline-secondary" type="button" @click="handleToggleActive(s.id)">
                           {{ s.active ? "Desativar" : "Ativar" }}
                         </button>
-                        <button class="btn btn-outline-danger" type="button" @click="store.removeSubscription(s.id)">
+                        <button class="btn btn-outline-danger" type="button" @click="handleRemove(s.id)">
                           Remover
                         </button>
                       </div>
@@ -152,8 +152,10 @@
 <script setup>
 import { computed, reactive } from "vue";
 import { useSubscriptionStore } from "../stores/subscriptionStore";
+import { useFlashStore } from "../stores/flashStore";
 
 const store = useSubscriptionStore();
+const flash = useFlashStore();
 
 const categories = ["Streaming", "Software", "Jogos", "Educacao", "Outros"];
 
@@ -198,7 +200,6 @@ const filtered = computed(() => {
   if (filters.category) {
     items = items.filter((s) => s.category === filters.category);
   }
-
   if (filters.status === "active") items = items.filter((s) => s.active);
   if (filters.status === "inactive") items = items.filter((s) => !s.active);
 
@@ -236,9 +237,26 @@ const handleAdd = () => {
     billingDay: form.billingDay
   });
 
+  flash.show("Assinatura criada com sucesso!", "success");
+
   form.name = "";
   form.amount = "";
   form.billingDay = 1;
+};
+
+const handleToggleActive = (id) => {
+  store.toggleActive(id);
+  const sub = store.subscriptions.find((s) => s.id === id);
+  if (sub?.active) {
+    flash.show("Assinatura ativada com sucesso!", "success");
+  } else {
+    flash.show("Assinatura inativada com sucesso!", "success");
+  }
+};
+
+const handleRemove = (id) => {
+  store.removeSubscription(id);
+  flash.show("Assinatura removida com sucesso!", "success");
 };
 
 const formatCurrency = (value) =>
